@@ -1,8 +1,8 @@
-;;; eacl.el --- Auto-complete lines by grepping project
+;;; eacl.el --- Auto-complete lines by grepping project -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2017-2026 Chen Bin
 ;;
-;; Version: 2.2.1
+;; Version: 2.2.2
 
 ;; Author: Chen Bin
 ;; URL: http://github.com/redguardtoo/eacl
@@ -317,8 +317,8 @@ If DELETED-P is t and git grep is used, grep only from deleted code."
       (setq cands (mapcar (lambda (cand) (replace-regexp-in-string "^-" "" cand)) cands)))
 
     (setq rlt (cl-remove-if `(lambda (e) (string= ,str e)) cands))
-    (when eacl-debug (message "cands=%s" cands))
-    cands))
+    (when eacl-debug (message "rlt=%s" rlt))
+    rlt))
 
 (defun eacl-clean-candidates (cands)
   "Remove duplicated lines from CANDS."
@@ -486,7 +486,6 @@ Return (cons multiline-text end-line-text) or nil."
       (let* ((case-fold-search nil)
              (leading-whitespaces (match-string 1 line))
              (pattern (concat "^" leading-whitespaces "[^ \t\r\n]"))
-             end-line
              (continue t)
              line)
         (save-excursion
@@ -564,7 +563,9 @@ Whitespace in keyword could match any characters."
                                                                  file
                                                                  html-p))
                   (when eacl-debug (message "cand=%s" cand))
-                  (add-to-list 'rlt cand)))))))
+                  (push cand rlt)))))))
+      (setq rlt (nreverse rlt))
+
       (cond
        ((or (not rlt) (= (length rlt)  0))
         (message "No multiline match was found!"))
@@ -620,8 +621,6 @@ Set `eacl-ignore-buffers' and `eacl-include-buffers' to specify ignored&included
 buffers."
   (interactive)
   (let* ((original-buf (current-buffer))
-         strip-prompt
-         (original-buf-name (buffer-name original-buf))
          (eacl-keyword-start (eacl-line-beginning-position))
          (info (eacl-current-line-info))
          (keyword (eacl-get-keyword (car info) t))

@@ -1,12 +1,12 @@
 ;;; eacl.el --- Auto-complete lines by grepping project
 
-;; Copyright (C) 2017-2021 Chen Bin
+;; Copyright (C) 2017-2026 Chen Bin
 ;;
-;; Version: 2.2.0
+;; Version: 2.2.1
 
-;; Author: Chen Bin <chenbin DOT sh AT gmail DOT com>
+;; Author: Chen Bin
 ;; URL: http://github.com/redguardtoo/eacl
-;; Package-Requires: ((emacs "25.1"))
+;; Package-Requires: ((emacs "27.1"))
 ;; Keywords: abbrev, convenience, matching
 
 ;; This file is not part of GNU Emacs.
@@ -346,7 +346,7 @@ If DELETED-P is t and git grep is used, grep only from deleted code."
       (cond
        ;; use git grep
        (git-p
-        (format "%s --no-pager grep -n %s \"%s\""
+        (format "%s --no-pager grep -n %s -- \"%s\""
                 eacl-git-program
                 git-grep-opts
                 search-regex))
@@ -363,11 +363,12 @@ If DELETED-P is t and git grep is used, grep only from deleted code."
       (cond
        ;; use git grep
        (git-p
-        (if deleted-p (format "%s --no-pager log -p --all -G \"%s\" | %s \"^-.*%s\""
+        (if deleted-p (format "%s --no-pager log -p --all -G -- \"%s\" | %s \"^-.*%s\""
                               eacl-git-program
                               search-regex
                               eacl-grep-program search-regex)
-          (format "%s --no-pager grep -h %s \"%s\""
+
+          (format "%s --no-pager grep -h %s -- \"%s\""
                   eacl-git-program
                   git-grep-opts
                   search-regex)))

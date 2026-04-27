@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2017-2026 Chen Bin
 ;;
-;; Version: 2.2.2
+;; Version: 2.2.3
 
 ;; Author: Chen Bin
 ;; URL: http://github.com/redguardtoo/eacl
@@ -363,7 +363,7 @@ If DELETED-P is t and git grep is used, grep only from deleted code."
       (cond
        ;; use git grep
        (git-p
-        (if deleted-p (format "%s --no-pager log -p --all -G -- \"%s\" | %s \"^-.*%s\""
+        (if deleted-p (format "%s --no-pager log -p --all -G \"%s\" | %s \"^-.*%s\""
                               eacl-git-program
                               search-regex
                               eacl-grep-program search-regex)
